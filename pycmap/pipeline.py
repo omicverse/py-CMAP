@@ -182,6 +182,25 @@ def run_cmap(adata_sc, adata_st, spatial_genes, spatial_data_type='honeycomb',
         logger.info(f"  Level 1 done: {time.time()-t:.1f}s, "
                     f"{len(sc_meta_f)} cells kept, {n_filtered} filtered (prob<={svm_threshold})")
 
+    # Stop here, not forty lines downstream. With every cell filtered out,
+    # Level 2 receives an empty set, skips every domain, and dies in
+    # `pd.concat` with "No objects to concatenate" — which says nothing about
+    # the cause. The cause is always one of two things, and both are visible
+    # right here.
+    if len(sc_meta_f) == 0:
+        raise ValueError(
+            f"Level 1 kept 0 of {n_cells} cells: no cell's domain probability "
+            f"exceeded svm_threshold={svm_threshold} (highest observed "
+            f"{float(max_prob.max()):.3f}, median {float(max_prob.median()):.3f}, "
+            f"{len(set(pred_st))} domains, so chance is "
+            f"{1 / max(len(set(pred_st)), 1):.3f}).\n"
+            "Either the domain classifier is near chance — `spatial_genes` do "
+            "not separate the domains in `cluster_key`, which is what to check "
+            "first — or the threshold is too strict for this dataset. Inspect "
+            "the probabilities before lowering it; a confident placement built "
+            "on a chance-level classifier is worse than none."
+        )
+
     # ========== Level 2: Spot Mapping ==========
     t = time.time()
     if verbose:

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pycmap"
-version = "1.1.1"
+version = "1.1.2"
 description = "Pure-Python port of R CMAP (Cell Mapping Across Positions) — maps single cells from scRNA-seq onto precise spatial coordinates via a three-level divide-and-conquer strategy."
 readme = "README.md"
 license = "MIT"

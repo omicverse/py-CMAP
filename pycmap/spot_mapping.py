@@ -204,6 +204,21 @@ def map_cell_to_spot(sc_norm, sc_meta, st_norm, spatial_location,
 
         cell_spot_map_list.append(sub_map)
 
+    if not cell_spot_map_list:
+        # Every domain was skipped by the `len(...) == 0` guard above. Say which
+        # side was empty per domain; `pd.concat([])` would only say "No objects
+        # to concatenate".
+        detail = "; ".join(
+            f"{c}: {int((pred_sc_svm == c).sum())} cells / "
+            f"{int((pred_st_svm == c).sum())} spots"
+            for c in clusters
+        )
+        raise ValueError(
+            "Level 2 produced no mapping: every domain had no cells or no "
+            f"spots on one side [{detail}]. The usual cause is that Level 1's "
+            "confidence filter removed the cells of those domains, or that the "
+            "spot and cell domain labels do not share values."
+        )
     cell_spot_map = pd.concat(cell_spot_map_list, ignore_index=True)
 
     # Attach gene list for reuse in Level 3 (avoids re-computation)
