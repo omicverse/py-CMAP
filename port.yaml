@@ -57,3 +57,13 @@ extensions:
   - {py: "pycmap.run_cmap",      note: "end-to-end AnnData pipeline"}
   - {py: "pycmap.run_cmap_fast", note: "accelerated path"}
   - {py: "pycmap.Mapping",       note: "optimiser object for level 2"}
+subpackages:
+  - name: "pycmap.multi"
+    summary: "cross-modal scATAC-seq -> spatial mapping via GLUE guidance-graph embeddings, then CMAP's three levels"
+    extra: "multi"
+    upstream: null        # no R counterpart; this is new work, not a port
+    parity:
+      status: not-applicable
+      note: "nothing in the R package to be at parity with. Development figures (same-cell r 0.804, top-10 25.7%) are in docs/multi_DESIGN.md and are the authors' own runs, not an independent benchmark."
+    entry_points:
+      - "pycmap.multi.run_cmap_atac"

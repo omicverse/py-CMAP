@@ -75,3 +75,10 @@ from .optimizer import (
 # End-to-end pipeline (AnnData API)
 from .pipeline import run_cmap
 from .fast import run_cmap_fast
+
+# Cross-modal extension (scATAC-seq -> spatial) via GLUE guidance graphs.
+# Deliberately NOT imported here: it needs scglue + torch, which are an
+# optional extra. Import it explicitly:
+#     from pycmap import multi            # requires pycmap[multi]
+#     from pycmap.multi import run_cmap_atac
+__all_subpackages__ = ["multi"]

@@ -39,6 +39,40 @@ result = run_cmap(
 
 `run_cmap_fast` is the accelerated path over the same three levels.
 
+## Cross-modal extension — `pycmap.multi`
+
+Maps **scATAC-seq onto spatial coordinates**, which the R package does not do.
+It bridges the modality gap with GLUE guidance-graph embeddings, then runs
+CMAP's three levels for the spatial assignment.
+
+```bash
+pip install "pycmap[multi]"     # scglue, torch, networkx, matplotlib
+```
+
+```python
+from pycmap.multi import run_cmap_atac
+adata_atac = run_cmap_atac(adata_rna, adata_atac, adata_st, ...)
+```
+
+`pycmap` itself does **not** import this subpackage, so the core install stays
+free of the GPU stack.
+
+The design notes carried over from development are in
+[`docs/multi_DESIGN.md`](docs/multi_DESIGN.md), including the preprocessing
+checklist that the implementation actually needed (chromosome-name matching
+between a GTF-derived RNA and 10x ATAC, the negative-binomial rather than
+Bernoulli ATAC model, HVG propagation into the guidance graph) and the measured
+progression across three attempts:
+
+| Version | Same-cell correlation | Top-10 match | Training |
+|---|---|---|---|
+| v1, Bernoulli, unbinarised | 0.054 | — | 100 min (embedding blew up) |
+| v2, binarised | 0.346 | 3.8 % | 60 min (no guidance graph — chromosome names mismatched) |
+| **v3, NB + chromosome fix + HVF subgraph** | **0.804** | **25.7 %** | **36 min** |
+
+Those are development figures from the authors' own runs, not an independent
+benchmark.
+
 ## Namespace coverage
 
 All **18** functions exported by the R package have a Python counterpart; see
