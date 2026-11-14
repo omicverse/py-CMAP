@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pycmap"
-version = "1.1.0"
+version = "1.1.1"
 description = "Pure-Python port of R CMAP (Cell Mapping Across Positions) — maps single cells from scRNA-seq onto precise spatial coordinates via a three-level divide-and-conquer strategy."
 readme = "README.md"
 license = "MIT"
@@ -41,11 +41,19 @@ dependencies = [
   "statsmodels>=0.14",
   "joblib>=1.3",
   "harmonypy>=0.0.9",
+  # Required, not optional. 18 modules — including `pipeline`, the core entry
+  # point — import torch at module scope, so `import pycmap` fails outright
+  # without it. It was listed as the `torch` extra, which made the whole test
+  # suite unrunnable on a clean install and misdescribed the package: this is
+  # a torch implementation of CMAP, not an implementation with a torch option.
+  "torch>=2.0",
 ]
 
 [project.optional-dependencies]
-# Level-2 optimisation can run on a torch backend; squidpy/smfishhmrf are only
-# needed for the HMRF spatial-gene preprocessing path.
+# `torch` is kept as an (empty-effect) extra so `pycmap[torch]` written
+# against 1.1.0 keeps resolving; torch is now a hard dependency above.
+# squidpy/smfishhmrf are only needed for the HMRF spatial-gene preprocessing
+# path.
 torch = ["torch>=2.0"]
 hmrf = ["squidpy>=1.4", "smfishHmrf>=1.3"]
 # Cross-modal scATAC -> spatial extension (pycmap.multi)
@@ -58,7 +66,12 @@ Homepage = "https://github.com/omicverse/py-CMAP"
 Upstream = "https://github.com/SuoLab-GZLab/CMAP"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pycmap", "pycmap/multi"]
+# `pycmap` alone. Listing `pycmap/multi` as well made hatchling map it to the
+# wheel root as `multi/`, where it collided with the copy already inside
+# `pycmap/` — the build then failed with "A second file is being added to the
+# wheel archive at the same path: multi/__init__.py". Subpackages come along
+# with their parent; they must not be listed separately.
+packages = ["pycmap"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

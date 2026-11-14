@@ -15,11 +15,16 @@ Upstream R package: <https://github.com/SuoLab-GZLab/CMAP> (MIT, © 2025 KE Jinc
 ## Install
 
 ```bash
-pip install pycmap                 # core
-pip install "pycmap[torch]"        # torch backend for the level-2 optimiser
-pip install "pycmap[hmrf]"         # HMRF spatial-gene preprocessing
+pip install pycmap                 # core — torch comes with it
+pip install "pycmap[hmrf]"         # + HMRF spatial-gene preprocessing
+pip install "pycmap[multi]"        # + the cross-modal scATAC extension
 pip install "pycmap[all]"
 ```
+
+torch is a **required** dependency, not an extra: the level-2 optimiser, the
+SSIM scoring and the fast paths import it at module scope, so `import pycmap`
+needs it. `pycmap[torch]` still resolves, for anything written against 1.1.0,
+but it adds nothing.
 
 ## Use
 

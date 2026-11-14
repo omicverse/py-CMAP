@@ -10,7 +10,7 @@ using spatial transcriptomics data through a 3-level divide-and-conquer strategy
 Original R package: https://github.com/SuoLab-GZLab/CMAP
 """
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 # Core utilities
 from .utils import (
