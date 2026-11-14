@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pycmap"
+version = "1.1.0"
+description = "Pure-Python port of R CMAP (Cell Mapping Across Positions) — maps single cells from scRNA-seq onto precise spatial coordinates via a three-level divide-and-conquer strategy."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10,<3.13"
+keywords = [
+  "single-cell",
+  "spatial-transcriptomics",
+  "cell-mapping",
+  "deconvolution",
+  "CMAP",
+  "bioinformatics",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.11",
+  "pandas>=2.0",
+  "anndata>=0.10",
+  "scanpy>=1.10",
+  "scikit-learn>=1.3",
+  "statsmodels>=0.14",
+  "joblib>=1.3",
+  "harmonypy>=0.0.9",
+]
+
+[project.optional-dependencies]
+# Level-2 optimisation can run on a torch backend; squidpy/smfishhmrf are only
+# needed for the HMRF spatial-gene preprocessing path.
+torch = ["torch>=2.0"]
+hmrf = ["squidpy>=1.4", "smfishHmrf>=1.3"]
+all = ["pycmap[torch,hmrf]"]
+dev = ["pytest>=7.4"]
+
+[project.urls]
+Homepage = "https://github.com/omicverse/py-CMAP"
+Upstream = "https://github.com/SuoLab-GZLab/CMAP"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pycmap"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

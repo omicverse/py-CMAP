@@ -1,0 +1,59 @@
+# port.yaml — machine-readable manifest read by omicverse.org/ports
+# Spec: https://github.com/omicverse/omicverse-org-home/blob/main/docs/PORT_MANIFEST.md
+schema: omicverse-port/v1
+package: "py-CMAP"
+pypi: "pycmap"
+import_name: "pycmap"
+language: python
+domain: spatial
+upstream:
+  name: "CMAP"
+  source: "GitHub"
+  version: "0.0.0.9000"
+  url: "https://github.com/SuoLab-GZLab/CMAP"
+  license: "MIT"
+  citation: "KE Jincan et al. CMAP: Cell Mapping Across Positions. SuoLab-GZLab (2025). https://github.com/SuoLab-GZLab/CMAP"
+omicverse:
+  module: null
+  since: null
+parity:
+  # NOT YET VERIFIED. The port exists and its namespace covers all 18 R exports
+  # (see NAMESPACE_PARITY.md), but no class-aware parity gate has been run
+  # against the R reference. Do not cite this port as parity-validated until
+  # this block carries a metric, a threshold and a measured value.
+  status: unverified
+  algorithm_class: null      # expected: stochastic-seeded (SVM + optimisation + interpolation)
+  metric: null               # proposed: spot-assignment agreement (ARI); coordinate RMSE; colocalisation count correlation
+  threshold: null
+  value: null
+  fixture: null              # candidate: the MOB example shipped with the R package (CMAP/MOB.CMAP.R)
+  test: null
+artifacts:
+  audit: null
+  report: null
+  compare_notebook: null
+  function_notebook: null
+functions:
+  - {r: "PredictDomain",                 py: "pycmap.predict_domain",                status: ported}
+  - {r: "data_to_transform",             py: "pycmap.data_to_transform",             status: ported}
+  - {r: "tune_parameter",                py: "pycmap.tune_parameter",                status: ported}
+  - {r: "map_spot_genes",                py: "pycmap.find_variable_features",        status: ported, note: "renamed; source marks it 'Equivalent to R: CMAP::map_spot_genes()'"}
+  - {r: "map_cell_to_spot",              py: "pycmap.map_cell_to_spot",              status: ported}
+  - {r: "spatial_relation_all",          py: "pycmap.spatial_relation_all",          status: ported}
+  - {r: "neighbor_spot",                 py: "pycmap.neighbor_spot",                 status: ported}
+  - {r: "cor_spot_cell",                 py: "pycmap.cor_spot_cell",                 status: ported}
+  - {r: "calculate_cell_location",       py: "pycmap.calculate_cell_location",       status: ported}
+  - {r: "cell_type_colocalization",      py: "pycmap.run_colocalization_analysis",   status: ported, note: "renamed"}
+  - {r: "celltype_colocalization_count", py: "pycmap.celltype_colocalization_count", status: ported}
+  - {r: "permute_cell_coordinates",      py: "pycmap.permute_cell_coordinates",      status: ported}
+  - {r: "harmony_embedding",             py: "pycmap.harmony_embedding",             status: ported}
+  - {r: "hmrf_spatial_gene",             py: "pycmap.hmrf_spatial_gene",             status: ported}
+  - {r: "sampling_sp_genes",             py: "pycmap.sampling_sp_genes",             status: ported}
+  - {r: "cosine_normalize",              py: "pycmap.cosine_normalize",              status: ported}
+  - {r: "scale_data_by_column",          py: "pycmap.scale_data_by_column",          status: ported}
+  - {r: "expand_diff",                   py: "pycmap.expand_diff",                   status: ported}
+extensions:
+  # Present in the Python port, absent from the R package.
+  - {py: "pycmap.run_cmap",      note: "end-to-end AnnData pipeline"}
+  - {py: "pycmap.run_cmap_fast", note: "accelerated path"}
+  - {py: "pycmap.Mapping",       note: "optimiser object for level 2"}
